@@ -1,5 +1,7 @@
 #pragma once
 
+#include <iostream>
+
 #include "node.h"
 
 namespace mylib
@@ -51,8 +53,19 @@ namespace mylib
 		};
 
 	public:
-		linked_list();
-		~linked_list();
+		linked_list()
+		{
+			_len = 0;
+
+			_head.data = NULL;
+			_head.next = &_tail;
+			_head.prev = nullptr;
+
+			_tail.data = NULL;
+			_tail.next = nullptr;
+			_tail.prev = &_head;
+		}
+		~linked_list() { }
 
 		void push_front(T data);
 		void push_back(T data);
@@ -80,47 +93,69 @@ namespace mylib
 	};
 
 	template<typename T>
-	inline linked_list<T>::linked_list()
-	{
-	}
-	template<typename T>
-	inline linked_list<T>::~linked_list()
-	{
-	}
-
-	template<typename T>
 	inline void linked_list<T>::push_front(T data)
 	{
+		node<T>* n = new node<T>{ data, &_head, _head.next };
+		_head.next->prev = n;
+		_head.next = n;
+
+		_len++;
 	}
 	template<typename T>
 	inline void linked_list<T>::push_back(T data)
 	{
+		node<T>* n = new node<T>{ data, _tail.prev, &_tail };
+		_tail.prev->next = n;
+		_tail.prev = n;
+
+		_len++;
 	}
 
 	template<typename T>
 	inline void linked_list<T>::pop_front()
 	{
+		//node* newNext = _head.next->next;
+		//_head.next->prev = nullptr;
+		//_head.next->next = nullptr;
+		//_head.next = newNext;
+
+		_head.next = _head.next->next;
+
+		_len--;
 	}
 	template<typename T>
 	inline void linked_list<T>::pop_back()
 	{
+		//node* newPrev = _tail.prev->prev;
+		//_tail.prev->prev = nullptr;
+		//_tail.prev->next = nullptr;
+		//_tail.prev = newPrev;
+
+		_tail.prev = _tail.prev->prev;
+
+		_len--;
 	}
 
 	template<typename T>
 	inline void linked_list<T>::clear()
 	{
+		_len = 0;
+
+		_head.next = &_tail;
+		_tail.prev = &_head;
 	}
 
 	template<typename T>
 	inline int linked_list<T>::length()
 	{
-		return 0;
+		return _len;
 	}
 
 	template<typename T>
 	inline bool linked_list<T>::isEmpty()
 	{
-		return false;
+		return _len == 0 && 
+			_head.next == &_tail && _tail.prev == &_head; // For Debug (Head와 Tail이 비어있는 경우 서로를 가리키는지 확인)
 	}
 
 	template<typename T>
