@@ -12,50 +12,55 @@ namespace mylib
 		class iterator
 		{
 		public:
-			iterator(node* n = nullptr)
+			iterator(node<T>* n = nullptr)
 			{
-
+				_ptr = n;
 			}
 
-			iterator operator ++(int) // 후위 증가 연산자
-			{
-
-			}
 			iterator& operator ++() // 전위 증가 연산자
 			{
-				return &this;
+				_ptr = _ptr->next;
+				return *this;
 			}
-			iterator operator --(int) // 후위 증가 연산자
+			iterator operator ++(int) // 후위 증가 연산자
 			{
-
+				iterator ret_it(_ptr);
+				_ptr = _ptr->next;
+				return ret_it;
 			}
 			iterator& operator --() // 전위 증가 연산자
 			{
-				return &this;
+				_ptr->prev;
+				return *this;
+			}
+			iterator operator --(int) // 후위 증가 연산자
+			{
+				iterator ret_it(_ptr);
+				_ptr = _ptr->prev;
+				return ret_it;
 			}
 
 			T& operator *() // 현재 node의 데이터를 반환
 			{
-
+				return _ptr->data;
 			}
 
 			bool operator == (const iterator& other)
 			{
-
+				return other._ptr == this->_ptr;
 			}
 			bool operator != (const iterator& other)
 			{
-
+				return other._ptr != this->_ptr;
 			}
 
-		private:
-			node* _n;
+			node<T>* _ptr;
 		};
 
 	public:
 		linked_list()
 		{
-			_len = 0;
+			_size = 0;
 
 			_head.data = NULL;
 			_head.next = &_tail;
@@ -75,9 +80,9 @@ namespace mylib
 
 		void clear();
 
-		int length();
+		int size();
 
-		bool isEmpty();
+		bool empty();
 
 		iterator erase(iterator iter);
 		void remove(T data);
@@ -86,7 +91,7 @@ namespace mylib
 		iterator end();
 
 	private:
-		int _len;
+		int _size;
 
 		node _head;
 		node _tail;
@@ -99,7 +104,7 @@ namespace mylib
 		_head.next->prev = n;
 		_head.next = n;
 
-		_len++;
+		_size++;
 	}
 	template<typename T>
 	inline void linked_list<T>::push_back(T data)
@@ -108,7 +113,7 @@ namespace mylib
 		_tail.prev->next = n;
 		_tail.prev = n;
 
-		_len++;
+		_size++;
 	}
 
 	template<typename T>
@@ -121,7 +126,7 @@ namespace mylib
 
 		_head.next = _head.next->next;
 
-		_len--;
+		_size--;
 	}
 	template<typename T>
 	inline void linked_list<T>::pop_back()
@@ -133,35 +138,40 @@ namespace mylib
 
 		_tail.prev = _tail.prev->prev;
 
-		_len--;
+		_size--;
 	}
 
 	template<typename T>
 	inline void linked_list<T>::clear()
 	{
-		_len = 0;
+		_size = 0;
 
 		_head.next = &_tail;
 		_tail.prev = &_head;
 	}
 
 	template<typename T>
-	inline int linked_list<T>::length()
+	inline int linked_list<T>::size()
 	{
-		return _len;
+		return _size;
 	}
 
 	template<typename T>
-	inline bool linked_list<T>::isEmpty()
+	inline bool linked_list<T>::empty()
 	{
-		return _len == 0 && 
+		return _size == 0 && 
 			_head.next == &_tail && _tail.prev == &_head; // For Debug (Head와 Tail이 비어있는 경우 서로를 가리키는지 확인)
 	}
 
 	template<typename T>
 	inline linked_list<T>::iterator linked_list<T>::erase(linked_list<T>::iterator iter)
 	{
-		return NULL;
+		node<T>* cur = iter._ptr;
+		cur->prev = cur->next;
+		cur->next->prev = cur->prev;
+		linked_list<T>::iterator ret(cur->next);
+		delete cur;
+		return ret;
 	}
 	template<typename T>
 	inline void linked_list<T>::remove(T data)
