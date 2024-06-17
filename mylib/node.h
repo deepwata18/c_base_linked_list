@@ -3,8 +3,9 @@
 namespace mylib
 {
 	template <typename T>
-	struct node
+	class node
 	{
+	public:
 		T data;
 
 		node* prev; // ¾ÕÂÊ node (front)

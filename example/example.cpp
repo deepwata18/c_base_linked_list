@@ -1,6 +1,4 @@
-﻿#pragma comment (lib, "mylib.lib")
-
-#include <iostream>
+﻿#include <iostream>
 
 int main(int argc, char** argv)
 {

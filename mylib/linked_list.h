@@ -25,7 +25,7 @@ namespace mylib
 			iterator operator ++(int) // 후위 증가 연산자
 			{
 				iterator ret_it(_ptr);
-				_ptr = _ptr->next;
+				operator++();
 				return ret_it;
 			}
 			iterator& operator --() // 전위 증가 연산자
@@ -36,7 +36,7 @@ namespace mylib
 			iterator operator --(int) // 후위 증가 연산자
 			{
 				iterator ret_it(_ptr);
-				_ptr = _ptr->prev;
+				operator--();
 				return ret_it;
 			}
 
@@ -54,7 +54,10 @@ namespace mylib
 				return other._ptr != this->_ptr;
 			}
 
+		private:
 			node<T>* _ptr;
+
+			friend class linked_list;
 		};
 
 	public:
@@ -119,11 +122,6 @@ namespace mylib
 	template<typename T>
 	inline void linked_list<T>::pop_front()
 	{
-		//node* newNext = _head.next->next;
-		//_head.next->prev = nullptr;
-		//_head.next->next = nullptr;
-		//_head.next = newNext;
-
 		_head.next = _head.next->next;
 
 		_size--;
@@ -131,11 +129,6 @@ namespace mylib
 	template<typename T>
 	inline void linked_list<T>::pop_back()
 	{
-		//node* newPrev = _tail.prev->prev;
-		//_tail.prev->prev = nullptr;
-		//_tail.prev->next = nullptr;
-		//_tail.prev = newPrev;
-
 		_tail.prev = _tail.prev->prev;
 
 		_size--;
@@ -164,12 +157,12 @@ namespace mylib
 	}
 
 	template<typename T>
-	inline linked_list<T>::iterator linked_list<T>::erase(linked_list<T>::iterator iter)
+	inline linked_list<T>::iterator linked_list<T>::erase(iterator iter)
 	{
 		node<T>* cur = iter._ptr;
 		cur->prev = cur->next;
 		cur->next->prev = cur->prev;
-		linked_list<T>::iterator ret(cur->next);
+		iterator ret(cur->next);
 		delete cur;
 		return ret;
 	}
@@ -191,12 +184,14 @@ namespace mylib
 	template<typename T>
 	inline linked_list<T>::iterator linked_list<T>::begin()
 	{
-		return iterator();
+		iterator ret(_head->next);
+		return ret;
 	}
 	template<typename T>
 	inline linked_list<T>::iterator linked_list<T>::end()
 	{
-		return iterator();
+		iterator ret(_tail->prev);
+		return ret;
 	}
 }
 

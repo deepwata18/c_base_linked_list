@@ -16,9 +16,4 @@
       <Filter>structure</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="linked_list.cpp">
-      <Filter>structure</Filter>
-    </ClCompile>
-  </ItemGroup>
 </Project>
